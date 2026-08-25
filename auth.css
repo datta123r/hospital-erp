@@ -4,4 +4,5 @@
 .google-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1px solid #cfd9d6;border-radius:11px;padding:12px;font-weight:800;color:var(--ink)}
 .google-g{font:900 20px Arial;color:#4285f4}.auth-note{margin-top:15px!important;font-size:11px}.auth-error{background:var(--red);color:#943f3f;border-radius:9px;padding:10px;margin:13px 0;display:none}.auth-error.show{display:block}
 .signed-in-email{font-size:10px;color:var(--mut)}#logout{display:none}.admin-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:17px}.admin-table-actions button{border:0;background:none;color:#9f3434;font-weight:700}.empty{padding:28px;text-align:center;color:var(--mut)}
+.admin-notice{display:none;margin:0 0 16px;padding:12px 14px;border-radius:10px;font-weight:700}.admin-notice.show{display:block}.admin-notice.success{background:var(--mint);color:var(--g)}.admin-notice.error{background:var(--red);color:#943f3f}.admin-notice.info{background:var(--blue);color:#345aa1}
 @media(max-width:900px){.admin-grid{grid-template-columns:1fr}}

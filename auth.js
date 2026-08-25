@@ -96,7 +96,7 @@
   function createAdminPage() {
     const section = document.createElement('section');
     section.className = 'page'; section.id = 'admin';
-    section.innerHTML = `<div class="head"><div><h1>User administration</h1><p>Grant Gmail accounts the minimum role required and review sign-in activity.</p></div><button class="btn secondary" id="refreshAdmin">↻ Refresh</button></div>
+    section.innerHTML = `<div class="head"><div><h1>User administration</h1><p>Grant Gmail accounts the minimum role required and review sign-in activity.</p></div><button class="btn secondary" id="refreshAdmin">↻ Refresh</button></div><div class="admin-notice" id="adminNotice" role="status" aria-live="polite"></div>
       <div class="stats" id="authStats"></div>
       <div class="admin-grid" style="margin-top:17px"><div class="card"><div class="cardhead"><div><h2>Add or update user</h2><p>Users receive access after signing in with this Gmail address.</p></div></div>
       <form class="form formgrid" id="accessForm"><div class="field span2"><label>Gmail / Google email *</label><input name="email" type="email" required placeholder="name@gmail.com"></div><div class="field"><label>Full name *</label><input name="full_name" required></div><div class="field"><label>Role *</label><select name="role" required>${roles.map(r => `<option value="${r.id}">${escapeHtml(r.name)}</option>`).join('')}</select></div><div class="field span2"><label>Branch / scope</label><input name="branch" placeholder="e.g. Vijayawada Main Clinic"></div><div class="span2"><button class="btn primary">Save access</button></div></form></div>
@@ -124,12 +124,18 @@
 
   async function saveAccess(event) {
     event.preventDefault();
+    const submit = event.currentTarget.querySelector('button[type="submit"], button:not([type])');
+    submit.disabled = true; submit.textContent = 'Saving…';
+    setAdminNotice('Saving user access…', 'info');
     const data = new FormData(event.currentTarget);
     const record = { email: String(data.get('email')).trim().toLowerCase(), full_name: String(data.get('full_name')).trim(), role: data.get('role'), branch: String(data.get('branch')).trim() || null, active: true, created_by: currentAccess.user_id };
     const { error } = await client.from('user_access').upsert(record, { onConflict: 'email' });
-    if (error) return toast(error.message);
+    if (error) { submit.disabled = false; submit.textContent = 'Save access'; setAdminNotice(`Could not save ${record.email}: ${error.message}`, 'error'); return; }
     await audit('user_access_saved', record.email, { role: record.role, branch: record.branch });
-    event.currentTarget.reset(); toast('User access saved'); loadAdmin();
+    event.currentTarget.reset();
+    await loadAdmin();
+    submit.disabled = false; submit.textContent = 'Save access';
+    setAdminNotice(`${record.email} was saved as ${roleNames[record.role]}. The authorised users table has been refreshed.`, 'success');
   }
 
   async function toggleAccess(button) {
@@ -139,7 +145,16 @@
     const { error } = await client.from('user_access').update({ active, updated_at: new Date().toISOString() }).eq('email', email);
     if (error) return toast(error.message);
     await audit(active ? 'user_access_activated' : 'user_access_suspended', email, {});
-    toast(active ? 'User activated' : 'User suspended'); loadAdmin();
+    await loadAdmin();
+    setAdminNotice(`${email} was ${active ? 'activated' : 'suspended'}.`, 'success');
+  }
+
+  function setAdminNotice(message, type) {
+    const notice = document.getElementById('adminNotice');
+    if (!notice) return;
+    notice.textContent = message;
+    notice.className = `admin-notice show ${type}`;
+    notice.scrollIntoView({ block: 'nearest' });
   }
 
   async function audit(action, entityId, details) {
