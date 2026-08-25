@@ -1,0 +1,7 @@
+.auth-shell{min-height:calc(100vh - 68px);display:grid;place-items:center;padding:30px}
+.auth-card{width:min(460px,100%);background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px;box-shadow:0 24px 70px #153e3520;text-align:center}
+.auth-card .mark{margin:0 auto 18px}.auth-card h1{font-size:30px;letter-spacing:-1px;margin:0 0 9px}.auth-card p{color:var(--mut);line-height:1.6;margin:0 0 22px}
+.google-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1px solid #cfd9d6;border-radius:11px;padding:12px;font-weight:800;color:var(--ink)}
+.google-g{font:900 20px Arial;color:#4285f4}.auth-note{margin-top:15px!important;font-size:11px}.auth-error{background:var(--red);color:#943f3f;border-radius:9px;padding:10px;margin:13px 0;display:none}.auth-error.show{display:block}
+.signed-in-email{font-size:10px;color:var(--mut)}#logout{display:none}.admin-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:17px}.admin-table-actions button{border:0;background:none;color:#9f3434;font-weight:700}.empty{padding:28px;text-align:center;color:var(--mut)}
+@media(max-width:900px){.admin-grid{grid-template-columns:1fr}}
